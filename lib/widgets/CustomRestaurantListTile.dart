@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_image/firebase_image.dart';
+import 'package:mealsApp/models/restaurant.dart';
 import 'package:mealsApp/utils/constants.dart';
 
 import './../screens/restaurant_detail.dart';
-import './RatingandReviewsWidget.dart';
 
 // List tempData,
-Widget buildCustomRestaurantListTile(
-  BuildContext context,
-  int index,
-  Animation<double> animation,
-  List tempData,
-) {
+Widget buildCustomRestaurantListTile(BuildContext context, int index,
+    Animation<double> animation, List<Restaurant> tempData) {
   return FadeTransition(
     opacity: Tween<double>(begin: 0, end: 1).animate(animation),
     child: Card(
+      elevation: 0,
       child: InkWell(
         splashColor: Colors.blue.withAlpha(30),
         onTap: () {
@@ -34,8 +31,8 @@ Widget buildCustomRestaurantListTile(
               Hero(
                 tag: tempData[index].id,
                 child: Container(
-                  width: 130,
-                  height: 130,
+                  width: 80,
+                  height: 80,
                   margin: EdgeInsets.only(right: 10),
                   decoration: BoxDecoration(
                       image: DecorationImage(
@@ -56,21 +53,29 @@ Widget buildCustomRestaurantListTile(
                     SizedBox(
                       height: 5.0,
                     ),
-                    tempData[index].city.length > 1
-                        ? Text(
-                            'location: ${tempData[index].city[0]}, ${tempData[index].city[1]}',
-                            style: kListTileTextStyle,
-                          )
-                        : Text(
-                            'location: ${tempData[index].city[0]}',
-                            style: kListTileTextStyle,
-                          ),
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.location_on,
+                          size: 18,
+                          color: Color(0XFFDF713E),
+                        ),
+                        const SizedBox(
+                          width: 5.0,
+                        ),
+                        tempData[index].city.length > 1
+                            ? Text(
+                                '${tempData[index].city[0]}, ${tempData[index].city[1]}',
+                                style: kListTileTextStyle,
+                              )
+                            : Text(
+                                '${tempData[index].city[0]}',
+                                style: kListTileTextStyle,
+                              ),
+                      ],
+                    ),
                     SizedBox(
                       height: 5.0,
-                    ),
-                    RatingandReviewsWidget(
-                      rating: 4.5,
-                      reviews: "700 reviews",
                     ),
                   ],
                 ),

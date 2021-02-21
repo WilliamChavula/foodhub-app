@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 const kRestaurantDetailPageTileHeaderStyle = TextStyle(
-  color: Color(0XFFC27573),
+  color: Color(0XFFDF713E),
   fontSize: 20.0,
   fontWeight: FontWeight.w500,
 );
@@ -12,7 +12,7 @@ const kRestaurantDetailPageHeaderStyle = TextStyle(
   fontSize: 34.0,
   fontFamily: 'NunitoSans',
   fontWeight: FontWeight.w700,
-  color: Color(0XFF5F2C3D),
+  color: Color(0XFF1F1A19),
 );
 
 const kListTileTextStyle = TextStyle(

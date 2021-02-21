@@ -1,6 +1,5 @@
 import 'package:auto_animated/auto_animated.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mealsApp/bloc/restaurant_bloc/restaurant_bloc.dart';
 
@@ -59,11 +58,11 @@ class _MealsDetailState extends State<MealsDetail> {
                   );
                 }
                 restaurantByCuisine = filterList(asyncSnapshot.data);
+                // print(restaurantByCuisine[0].overview);
                 return CustomScrollView(
                   slivers: <Widget>[
                     CustomSliverAppBar(
                       imageURL: widget.categoryImageUrl,
-                      trailingIcon: FontAwesomeIcons.slidersH,
                       imageFit: BoxFit.cover,
                       id: widget.categoryID,
                     ),
@@ -89,18 +88,6 @@ class _MealsDetailState extends State<MealsDetail> {
                         restaurantByCuisine,
                       ),
                     ),
-                    // SliverList(
-                    //   delegate: SliverChildBuilderDelegate(
-                    //     (context, index) {
-                    //       return buildCustomRestaurantListTile(
-                    //         context,
-                    //         index,
-                    //         restaurantByCuisine,
-                    //       );
-                    //     },
-                    //     childCount: restaurantByCuisine.length,
-                    //   ),
-                    // )
                   ],
                 );
               },

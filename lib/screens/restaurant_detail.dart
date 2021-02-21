@@ -1,6 +1,5 @@
 import 'package:delayed_display/delayed_display.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import './../models/restaurant.dart';
 import './../widgets/custom_restaurant_sliver_appbar.dart';
@@ -25,7 +24,6 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
         slivers: <Widget>[
           CustomSliverAppBar(
             imageURL: widget.restaurantData.imageURL,
-            trailingIcon: FontAwesomeIcons.slidersH,
             imageFit: BoxFit.fitWidth,
             id: widget.restaurantData.id,
           ),
@@ -47,64 +45,27 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
                       children: [
                         const Icon(
                           Icons.location_on,
-                          size: 16,
-                          color: Colors.black45,
+                          size: 18,
+                          color: Color(0XFFDF713E),
                         ),
                         const SizedBox(
                           width: 5.0,
                         ),
-                        Text(
-                          'Blantyre, Malawi',
-                          style: kListTileTextStyle.copyWith(fontSize: 16),
-                        ),
+                        widget.restaurantData.city.length > 1
+                            ? Text(
+                                '${widget.restaurantData.city[0]}, ${widget.restaurantData.city[1]}',
+                                style: kListTileTextStyle,
+                              )
+                            : Text(
+                                '${widget.restaurantData.city[0]}',
+                                style: kListTileTextStyle,
+                              ),
                       ],
                     ),
                     const SizedBox(
                       height: 8.0,
                     ),
-                    Container(
-                      height: 80.0,
-                      color: kBackgroundColorStyle,
-                      child: Row(
-                        children: [
-                          const Text(
-                            'Overall Rating:',
-                            style: kRestaurantDetailPageTileHeaderStyle,
-                          ),
-                          const SizedBox(
-                            width: 10.0,
-                          ),
-                          const CircleAvatar(
-                            backgroundColor: Color(0XFFF5BA45),
-                            radius: 18,
-                            child: Icon(
-                              Icons.star,
-                              size: 30,
-                              color: Color(0XFFFFFFFF),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 10.0,
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                '4.5',
-                                style: kListTileTextStyle.copyWith(
-                                    fontSize: 20.0,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                'Rating',
-                                style:
-                                    kListTileTextStyle.copyWith(fontSize: 16.0),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
+
                     const SizedBox(
                       height: 8.0,
                     ),

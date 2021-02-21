@@ -11,16 +11,7 @@ class RestaurantRepositoryService {
 
   List<Restaurant> _restaurantFromSnapshot(QuerySnapshot restaurantSnapshot) {
     return restaurantSnapshot.docs.map((doc) {
-      var data = doc.data();
-      return Restaurant(
-        id: doc.id,
-        name: data["name"],
-        imageURL: data["logo"],
-        address: data["address"],
-        city: data["city"],
-        phoneNumber: data["phone number"],
-        categoryName: data["category"],
-      );
+      return Restaurant.fromMap(doc.data(), doc.id);
     }).toList();
   }
 

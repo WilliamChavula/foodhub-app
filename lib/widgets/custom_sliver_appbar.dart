@@ -1,18 +1,15 @@
 import 'package:firebase_image/firebase_image.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class CustomSliverAppBar extends StatelessWidget {
   const CustomSliverAppBar({
     Key key,
     @required this.imageURL,
-    @required this.trailingIcon,
     this.id,
     this.imageFit = BoxFit.cover,
   }) : super(key: key);
 
   final String imageURL;
-  final IconData trailingIcon;
   final BoxFit imageFit;
   final String id;
 
@@ -59,16 +56,6 @@ class CustomSliverAppBar extends StatelessWidget {
           ),
         ],
       ),
-      actions: <Widget>[
-        IconButton(
-          icon: FaIcon(
-            trailingIcon,
-            color: Colors.white,
-            size: 20.0,
-          ),
-          onPressed: () {},
-        ),
-      ],
     );
   }
 }
