@@ -1,3 +1,4 @@
+import 'package:auto_animated/auto_animated.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,6 +24,16 @@ class MealsDetail extends StatefulWidget {
 
 class _MealsDetailState extends State<MealsDetail> {
   List<Restaurant> restaurantByCuisine = [];
+
+  // list animation
+  final options = LiveOptions(
+      delay: Duration(seconds: 0),
+      showItemInterval: Duration(milliseconds: 250),
+      showItemDuration: Duration(milliseconds: 700),
+      visibleFraction: 0.05,
+      reAnimateOnVisibility: false);
+
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -59,22 +70,37 @@ class _MealsDetailState extends State<MealsDetail> {
                     SliverToBoxAdapter(
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 8.0, vertical: 10.0),
+                            horizontal: 8.0, vertical: 4.0),
                         child: Text(
                           widget.categoryTitle,
                           style: kRestaurantDetailPageHeaderStyle,
                         ),
                       ),
                     ),
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          return buildCustomRestaurantListTile(
-                              restaurantByCuisine, index, context);
-                        },
-                        childCount: restaurantByCuisine.length,
+                    LiveSliverList.options(
+                      controller: _scrollController,
+                      options: options,
+                      itemCount: restaurantByCuisine.length,
+                      itemBuilder: (context, index, animation) =>
+                          buildCustomRestaurantListTile(
+                        context,
+                        index,
+                        animation,
+                        restaurantByCuisine,
                       ),
-                    )
+                    ),
+                    // SliverList(
+                    //   delegate: SliverChildBuilderDelegate(
+                    //     (context, index) {
+                    //       return buildCustomRestaurantListTile(
+                    //         context,
+                    //         index,
+                    //         restaurantByCuisine,
+                    //       );
+                    //     },
+                    //     childCount: restaurantByCuisine.length,
+                    //   ),
+                    // )
                   ],
                 );
               },
