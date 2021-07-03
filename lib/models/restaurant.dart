@@ -3,8 +3,10 @@ class Restaurant {
   String overview;
   String name;
   String imageURL;
+  String photoName;
   Address address;
   List<dynamic> city;
+  List<dynamic> images;
   PhoneNumber phoneNumber;
   List<dynamic> categoryName;
 
@@ -13,8 +15,10 @@ class Restaurant {
     this.overview,
     this.name,
     this.imageURL,
+    this.photoName,
     this.address,
     this.city,
+    this.images,
     this.phoneNumber,
     this.categoryName,
   });
@@ -25,8 +29,10 @@ class Restaurant {
         overview: json["overview"],
         name: json["name"],
         imageURL: json["logo"],
+        photoName: json["photoName"],
         address: Address.fromMap(json["address"]),
         city: json["city"],
+        images: json["images"],
         phoneNumber: PhoneNumber.fromMap(json["phone number"]),
         categoryName: json["category"],
       );

@@ -8,9 +8,15 @@ class FoodhubInitial extends FoodhubState {}
 class FoodhubCategoryLoading extends FoodhubState {}
 
 class FoodhubCategoryLoaded extends FoodhubState {
-  final Stream<List<CuisineCategory>> cuisineCategory;
+  final Future<List<CuisineCategory>> cuisineCategory;
 
-  FoodhubCategoryLoaded({this.cuisineCategory});
+  FoodhubCategoryLoaded({this.cuisineCategory})
+      : assert(cuisineCategory != null);
 }
 
-class FoodhubCategoryLoadingError extends FoodhubState {}
+class FoodhubCategoryLoadingError extends FoodhubState {
+  final String errorMessage;
+
+  FoodhubCategoryLoadingError({@required this.errorMessage})
+      : assert(errorMessage != null);
+}

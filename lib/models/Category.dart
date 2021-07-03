@@ -9,8 +9,9 @@ class CuisineCategory {
     this.imageURL,
   });
 
-  factory CuisineCategory.fromMap(Map<String, dynamic> json) => CuisineCategory(
-        id: json["id"],
+  factory CuisineCategory.fromMap(Map<String, dynamic> json, String id) =>
+      CuisineCategory(
+        id: id,
         title: json["name"],
         imageURL: json["imageURL"],
       );

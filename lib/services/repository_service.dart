@@ -1,23 +1,30 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/Category.dart';
 
-class CategoryRepositoryService {
+abstract class CategoryRepository {
+  Future<List<CuisineCategory>> get categories;
+}
+
+class CategoryRepositoryService implements CategoryRepository {
   final CollectionReference categoryCollection =
       FirebaseFirestore.instance.collection('categories');
 
-  List<CuisineCategory> _categoriesFromSnapshot(
-      QuerySnapshot categorySnapshot) {
-    return categorySnapshot.docs.map((doc) {
-      var data = doc.data();
-      return CuisineCategory(
-        id: doc.id,
-        title: data["name"],
-        imageURL: data["imageURL"],
-      );
-    }).toList();
-  }
+  List<CuisineCategory> _categories;
+  List<Map<String, List<dynamic>>> imagesCollection;
 
-  Stream<List<CuisineCategory>> get categories {
-    return categoryCollection.snapshots().map(_categoriesFromSnapshot);
+  Future<List<CuisineCategory>> get categories async {
+    if (_categories != null) return _categories;
+
+    try {
+      final querySnapshot = await categoryCollection.get();
+
+      _categories = querySnapshot.docs
+          .map((doc) => CuisineCategory.fromMap(doc.data(), doc.id))
+          .toList();
+    } catch (e) {
+      print(e.message);
+    }
+
+    return _categories;
   }
 }

@@ -11,18 +11,17 @@ Widget buildCustomRestaurantListTile(BuildContext context, int index,
   return FadeTransition(
     opacity: Tween<double>(begin: 0, end: 1).animate(animation),
     child: Card(
+      color: Color(0XFFFDF2D6).withOpacity(0.25),
       elevation: 0,
       child: InkWell(
         splashColor: Colors.blue.withAlpha(30),
-        onTap: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => RestaurantDetail(
-                  restaurantData: tempData[index],
-                ),
-              ));
-        },
+        onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => RestaurantDetail(
+                restaurantData: tempData[index],
+              ),
+            )),
         child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: Row(
@@ -31,8 +30,8 @@ Widget buildCustomRestaurantListTile(BuildContext context, int index,
               Hero(
                 tag: tempData[index].id,
                 child: Container(
-                  width: 80,
-                  height: 80,
+                  width: 50,
+                  height: 50,
                   margin: EdgeInsets.only(right: 10),
                   decoration: BoxDecoration(
                       image: DecorationImage(
@@ -48,31 +47,20 @@ Widget buildCustomRestaurantListTile(BuildContext context, int index,
                     Text(
                       tempData[index].name,
                       style: kRestaurantDetailPageTileHeaderStyle.copyWith(
-                          fontWeight: FontWeight.w400),
+                          fontWeight: FontWeight.w400, fontSize: 18.0),
                     ),
                     SizedBox(
                       height: 5.0,
                     ),
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.location_on,
-                          size: 18,
-                          color: Color(0XFFDF713E),
-                        ),
-                        const SizedBox(
-                          width: 5.0,
-                        ),
-                        tempData[index].city.length > 1
-                            ? Text(
-                                '${tempData[index].city[0]}, ${tempData[index].city[1]}',
-                                style: kListTileTextStyle,
-                              )
-                            : Text(
-                                '${tempData[index].city[0]}',
-                                style: kListTileTextStyle,
-                              ),
-                      ],
+                    Text(
+                      tempData[index].overview,
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                          color: Colors.black45,
+                          letterSpacing: 1.1,
+                          fontSize: 14.0),
+                      softWrap: true,
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     SizedBox(
                       height: 5.0,

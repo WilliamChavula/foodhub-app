@@ -12,11 +12,11 @@ const kRestaurantDetailPageHeaderStyle = TextStyle(
   fontSize: 34.0,
   fontFamily: 'NunitoSans',
   fontWeight: FontWeight.w700,
-  color: Color(0XFF1F1A19),
+  color: Color(0XFF100B00),
 );
 
 const kListTileTextStyle = TextStyle(
-  fontSize: 12.0,
+  fontSize: 14.0,
   fontWeight: FontWeight.w400,
   color: Color(0XFF424953),
 );

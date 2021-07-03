@@ -30,10 +30,6 @@ class CustomSliverAppBar extends StatelessWidget {
               decoration: BoxDecoration(
                 image: DecorationImage(
                     image: FirebaseImage(imageURL), fit: imageFit),
-                borderRadius: BorderRadius.only(
-                  bottomRight: Radius.circular(18.0),
-                  bottomLeft: Radius.circular(18.0),
-                ),
               ),
             ),
           ),
@@ -47,10 +43,6 @@ class CustomSliverAppBar extends StatelessWidget {
                 ],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-              ),
-              borderRadius: BorderRadius.only(
-                bottomRight: Radius.circular(18.0),
-                bottomLeft: Radius.circular(18.0),
               ),
             ),
           ),

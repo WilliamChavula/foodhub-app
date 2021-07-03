@@ -10,5 +10,6 @@ abstract class FoodhubRestaurantEvent {}
 class LoadRestaurantEvent extends FoodhubRestaurantEvent {
   final String restaurantCategoryTitle;
 
-  LoadRestaurantEvent(this.restaurantCategoryTitle);
+  LoadRestaurantEvent(this.restaurantCategoryTitle)
+      : assert(restaurantCategoryTitle != null);
 }

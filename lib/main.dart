@@ -6,7 +6,9 @@ import './bloc/restaurant_bloc/restaurant_bloc.dart';
 import './services/repository_service.dart';
 import './services/restaurant_service.dart';
 
+import 'bloc/photos_bloc/bloc/photos_bloc_bloc.dart';
 import 'screens/categories_screen.dart';
+import 'services/firebase_storage_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,8 +29,14 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<FoodhubBloc>(
           create: (context) => FoodhubBloc(
-              categoryRepositoryService: CategoryRepositoryService()),
+              categoryRepositoryService: CategoryRepositoryService())
+            ..add(LoadCategoriesEvent()),
         ),
+        BlocProvider<PhotosBlocBloc>(
+          create: (context) =>
+              PhotosBlocBloc(storageService: FirebaseStorageService())
+                ..add(PhotosLoadingEvent(photosReference: 'restaurant_photos')),
+        )
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

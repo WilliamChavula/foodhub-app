@@ -2,6 +2,7 @@ import 'package:auto_animated/auto_animated.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mealsApp/bloc/restaurant_bloc/restaurant_bloc.dart';
+import 'package:mealsApp/widgets/loading_indicator.dart';
 
 import '../models/restaurant.dart';
 import '../utils/constants.dart';
@@ -44,67 +45,62 @@ class _MealsDetailState extends State<MealsDetail> {
 
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: kBackgroundColorStyle,
+      backgroundColor: Colors.white,
       body: BlocBuilder<FoodhubRestaurantBloc, FoodhubRestaurantState>(
         builder: (context, state) {
           if (state is FoodhubRestaurantsLoaded) {
-            return StreamBuilder<List<Restaurant>>(
-              stream: state.restaurants,
-              builder: (context, asyncSnapshot) {
-                if (!asyncSnapshot.hasData) {
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-                restaurantByCuisine = filterList(asyncSnapshot.data);
-                // print(restaurantByCuisine[0].overview);
-                return CustomScrollView(
-                  slivers: <Widget>[
+            return FutureBuilder<List<Restaurant>>(
+                future: state.restaurants,
+                builder: (context, asyncSnapshot) {
+                  if (!asyncSnapshot.hasData) {
+                    return LoadingIndicatorWidget(size: size);
+                  }
+                  restaurantByCuisine = filterList(asyncSnapshot.data);
+                  return CustomScrollView(slivers: <Widget>[
                     CustomSliverAppBar(
                       imageURL: widget.categoryImageUrl,
                       imageFit: BoxFit.cover,
                       id: widget.categoryID,
                     ),
                     SliverToBoxAdapter(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8.0, vertical: 4.0),
-                        child: Text(
-                          widget.categoryTitle,
-                          style: kRestaurantDetailPageHeaderStyle,
-                        ),
-                      ),
+                      child: _buildRestaurantDetailCategoryName(),
                     ),
                     LiveSliverList.options(
-                      controller: _scrollController,
-                      options: options,
-                      itemCount: restaurantByCuisine.length,
-                      itemBuilder: (context, index, animation) =>
-                          buildCustomRestaurantListTile(
-                        context,
-                        index,
-                        animation,
-                        restaurantByCuisine,
-                      ),
-                    ),
-                  ],
-                );
-              },
-            );
+                        controller: _scrollController,
+                        options: options,
+                        itemCount: restaurantByCuisine.length,
+                        itemBuilder: (context, index, animation) =>
+                            buildCustomRestaurantListTile(
+                              context,
+                              index,
+                              animation,
+                              restaurantByCuisine,
+                            ))
+                  ]);
+                });
           }
-          return Center(
-            child: CircularProgressIndicator(),
-          );
+          return LoadingIndicatorWidget(size: size);
         },
       ),
     );
   }
 
+  Container _buildRestaurantDetailCategoryName() => Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+        child: Text(
+          widget.categoryTitle,
+          style: kRestaurantDetailPageHeaderStyle,
+        ),
+      );
+
   List<Restaurant> filterList(List<Restaurant> unfilteredList) {
+    /// filters Restaurant list
+    /// returns list of [List<Restaurant>] that match the category name the user clicked
+    var categoryName = widget.categoryTitle.toLowerCase();
     List<Restaurant> filteredList = unfilteredList
-        .where((element) =>
-            element.categoryName.contains(widget.categoryTitle.toLowerCase()))
+        .where((elem) => elem.categoryName.contains(categoryName))
         .toList();
     return filteredList;
   }

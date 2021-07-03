@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:mealsApp/models/restaurant.dart';
@@ -11,9 +12,10 @@ part 'restaurant_state.dart';
 class FoodhubRestaurantBloc
     extends Bloc<FoodhubRestaurantEvent, FoodhubRestaurantState> {
   FoodhubRestaurantBloc({@required this.restaurantRepositoryService})
-      : super(FoodhubInitial());
+      : assert(restaurantRepositoryService != null),
+        super(FoodhubInitial());
 
-  final RestaurantRepositoryService restaurantRepositoryService;
+  final RestaurantRepository restaurantRepositoryService;
 
   @override
   Stream<FoodhubRestaurantState> mapEventToState(
@@ -23,9 +25,13 @@ class FoodhubRestaurantBloc
       yield FoodhubRestaurantLoading();
       try {
         final restaurants = this.restaurantRepositoryService.restaurants;
+
         yield FoodhubRestaurantsLoaded(restaurants: restaurants);
+      } on SocketException catch (_) {
+        yield FoodhubRestaurantLoadingError(
+            errorMessage: "No Internet connection. Please try again later.");
       } catch (e) {
-        yield FoodhubRestaurantLoadingError();
+        yield FoodhubRestaurantLoadingError(errorMessage: e.message);
       }
     }
   }

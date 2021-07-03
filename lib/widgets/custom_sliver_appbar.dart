@@ -1,7 +1,11 @@
-import 'package:firebase_image/firebase_image.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class CustomSliverAppBar extends StatelessWidget {
+  final String imageURL;
+  final BoxFit imageFit;
+  final String id;
+
   const CustomSliverAppBar({
     Key key,
     @required this.imageURL,
@@ -9,9 +13,26 @@ class CustomSliverAppBar extends StatelessWidget {
     this.imageFit = BoxFit.cover,
   }) : super(key: key);
 
-  final String imageURL;
-  final BoxFit imageFit;
-  final String id;
+  Container _heroImageWidget() => Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+              image: CachedNetworkImageProvider(imageURL), fit: imageFit),
+        ),
+      );
+
+  Container _buildGradient() => Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Colors.black.withOpacity(0.3),
+              Colors.black.withOpacity(0.1),
+              Colors.black.withOpacity(0.01)
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -19,41 +40,16 @@ class CustomSliverAppBar extends StatelessWidget {
     return SliverAppBar(
       backgroundColor: Colors.transparent,
       elevation: 0.0,
-      expandedHeight: deviceSize.height / 3,
+      expandedHeight: deviceSize.height / 2.5,
       floating: true,
       pinned: true,
       flexibleSpace: Stack(
         children: [
           Hero(
             tag: id,
-            child: Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: FirebaseImage(imageURL), fit: imageFit),
-                borderRadius: BorderRadius.only(
-                  bottomRight: Radius.circular(18.0),
-                  bottomLeft: Radius.circular(18.0),
-                ),
-              ),
-            ),
+            child: _heroImageWidget(),
           ),
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Colors.black.withOpacity(0.3),
-                  Colors.black.withOpacity(0.1),
-                  Colors.black.withOpacity(0.01)
-                ],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
-              borderRadius: BorderRadius.only(
-                bottomRight: Radius.circular(18.0),
-                bottomLeft: Radius.circular(18.0),
-              ),
-            ),
-          ),
+          _buildGradient(),
         ],
       ),
     );
