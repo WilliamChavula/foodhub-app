@@ -6,6 +6,10 @@ import 'package:mealsApp/widgets/loading_indicator.dart';
 import './../models/restaurant.dart';
 import './../widgets/custom_restaurant_sliver_appbar.dart';
 import './../utils/constants.dart';
+import './../extensions/capitalize_word_ext.dart';
+import './../extensions/trim_whiteSpace_ext.dart';
+
+// import '../extensions/capitalize_word_ext.dart'
 
 class RestaurantDetail extends StatefulWidget {
   final Restaurant restaurantData;
@@ -21,6 +25,7 @@ class RestaurantDetail extends StatefulWidget {
 class _RestaurantDetailState extends State<RestaurantDetail> {
   @override
   Widget build(BuildContext context) {
+    final List<String> imgs = widget.restaurantData.images.cast<String>();
     return Scaffold(
       body: CustomScrollView(
         slivers: <Widget>[
@@ -48,12 +53,7 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
                             style: kListTileTextStyle.copyWith(
                                 fontWeight: FontWeight.bold)),
                         const SizedBox(width: 5.0),
-                        widget.restaurantData.city.length > 1
-                            ? Text(
-                                '${widget.restaurantData.city[0]} and  ${widget.restaurantData.city[1]}',
-                                style: kListTileTextStyle)
-                            : Text('${widget.restaurantData.city[0]}',
-                                style: kListTileTextStyle),
+                        _getListDataAndReturnWidget(widget.restaurantData.city)
                       ],
                     ),
                     const SizedBox(height: 8.0),
@@ -111,8 +111,7 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
                                     height: 40,
                                     child: CachedNetworkImage(
                                       fit: BoxFit.cover,
-                                      imageUrl:
-                                          widget.restaurantData.images[index],
+                                      imageUrl: imgs[index].stripWhiteSpace(),
                                       placeholder: (context, _) =>
                                           LoadingIndicatorWidget(
                                         size: MediaQuery.of(context).size,
@@ -131,8 +130,6 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
                         ],
                       ),
                     ),
-
-                    // Brief description of restaurant
                   ],
                 ),
               ),
@@ -143,26 +140,33 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
     );
   }
 
-  List<dynamic> filterRestaurantPhotos(String restaurantName,
-      List<Map<String, List<dynamic>>> restaurantPhotos) {
-    List<dynamic> filteredList;
-    for (var photo in restaurantPhotos) {
-      final restaurantKey = photo.keys.first.toLowerCase();
-      if (restaurantKey == restaurantName) {
-        filteredList = photo[photo.keys.first];
-      }
+  Widget _getListDataAndReturnWidget(List<dynamic> city) {
+    Widget cityWidget;
+
+    if (city.length > 1) {
+      // String firstCity = ;
+      // String secondCity = ;
+      cityWidget = _buildTextWidget(firstCity: city[0], secondCity: city[1]);
+    } else {
+      // String firstCity = ;
+      cityWidget = _buildTextWidget(firstCity: city[0]);
     }
-    return filteredList;
+
+    return cityWidget;
+  }
+
+  Text _buildTextWidget({@required String firstCity, String secondCity = ''}) {
+    var cityString;
+    if (secondCity.isNotEmpty) {
+      cityString =
+          '${firstCity.sentenceCase()} and ${secondCity.sentenceCase()}';
+    } else {
+      cityString = '${firstCity.sentenceCase()}';
+    }
+
+    return Text(
+      cityString,
+      style: kListTileTextStyle,
+    );
   }
 }
-
-/*
-decoration: BoxDecoration(
-  image: DecorationImage(
-    image: CachedNetworkImageProvider(
-        list[index]),
-    fit: BoxFit.cover,
-  ),
-  borderRadius: BorderRadius.all(
-      Radius.circular(4.0))),
-*/
