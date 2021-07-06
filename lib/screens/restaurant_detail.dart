@@ -1,15 +1,14 @@
+import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:delayed_display/delayed_display.dart';
-import 'package:flutter/material.dart';
-import 'package:mealsApp/widgets/loading_indicator.dart';
+import 'package:mealsApp/widgets/photo_view_widget.dart';
 
-import './../models/restaurant.dart';
-import './../widgets/custom_restaurant_sliver_appbar.dart';
-import './../utils/constants.dart';
-import './../extensions/capitalize_word_ext.dart';
-import './../extensions/trim_whiteSpace_ext.dart';
-
-// import '../extensions/capitalize_word_ext.dart'
+import '../widgets/loading_indicator.dart';
+import '../models/restaurant.dart';
+import '../widgets/custom_restaurant_sliver_appbar.dart';
+import '../utils/constants.dart';
+import '../extensions/capitalize_word_ext.dart';
+import '../extensions/trim_whiteSpace_ext.dart';
 
 class RestaurantDetail extends StatefulWidget {
   final Restaurant restaurantData;
@@ -129,11 +128,20 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
         child: Container(
           width: 40,
           height: 40,
-          child: CachedNetworkImage(
-            fit: BoxFit.cover,
-            imageUrl: imgs[index].stripWhiteSpace(),
-            placeholder: (context, _) => LoadingIndicatorWidget(
-              size: MediaQuery.of(context).size,
+          child: GestureDetector(
+            onTap: () =>
+                Navigator.of(context).push(MaterialPageRoute<PhotoViewWidget>(
+                    builder: (_) => PhotoViewWidget(
+                          galleryItems: imgs,
+                          index: index,
+                          restaurantName: widget.restaurantData.name,
+                        ))),
+            child: CachedNetworkImage(
+              fit: BoxFit.cover,
+              imageUrl: imgs[index].stripWhiteSpace(),
+              placeholder: (context, _) => LoadingIndicatorWidget(
+                size: MediaQuery.of(context).size,
+              ),
             ),
           ),
         ),

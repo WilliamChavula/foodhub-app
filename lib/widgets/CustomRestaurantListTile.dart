@@ -17,7 +17,7 @@ Widget buildCustomRestaurantListTile(BuildContext context, int index,
         splashColor: Colors.blue.withAlpha(30),
         onTap: () => Navigator.push(
             context,
-            MaterialPageRoute(
+            MaterialPageRoute<RestaurantDetail>(
               builder: (context) => RestaurantDetail(
                 restaurantData: tempData[index],
               ),
