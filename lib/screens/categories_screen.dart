@@ -8,6 +8,7 @@ import '../models/Category.dart';
 import './meals_detail_screen.dart';
 
 import '../utils/constants.dart';
+import 'error_screen.dart';
 
 class CategoriesScreen extends StatefulWidget {
   @override
@@ -70,16 +71,20 @@ class _CategoriesScreenState extends State<CategoriesScreen>
                       return FutureBuilder<List<CuisineCategory>>(
                           future: state.cuisineCategory,
                           builder: (BuildContext context, snapshot) {
-                            if (!snapshot.hasData)
-                              return LoadingIndicatorWidget(
-                                  size: MediaQuery.of(context).size);
+                            // if (!snapshot.hasData)
+                            //   return LoadingIndicatorWidget(
+                            //       size: MediaQuery.of(context).size);
+                            // if (snapshot.hasError) {
+                            //   print(snapshot.error);
+                            //   return ErrorScreen(errorMessage: 'error');
+                            // }
 
                             return _buildStaggeredGrid(snapshot.data);
                           });
                     }
-                    // else if (state
-                    //     is FoodhubCategoryLoading) //TODO: handle error state here
-                    //   return LoadingIndicatorWidget(size: MediaQuery.of(context).size);
+                    if (state is FoodhubCategoryLoadingError) {
+                      return ErrorScreen(errorMessage: state.errorMessage);
+                    } //TODO: handle error state here
 
                     return LoadingIndicatorWidget(
                         size: MediaQuery.of(context).size);

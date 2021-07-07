@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 import '../models/Category.dart';
 
 abstract class CategoryRepository {
@@ -13,18 +16,23 @@ class CategoryRepositoryService implements CategoryRepository {
   List<Map<String, List<dynamic>>> imagesCollection;
 
   Future<List<CuisineCategory>> get categories async {
-    if (_categories != null) return _categories;
+    // if (_categories != null) return _categories;
 
     try {
-      final querySnapshot = await categoryCollection.get();
+      final querySnapshot =
+          await categoryCollection.get(GetOptions(source: Source.server));
 
       _categories = querySnapshot.docs
           .map((doc) => CuisineCategory.fromMap(doc.data(), doc.id))
           .toList();
-    } catch (e) {
-      print(e.message);
-    }
 
-    return _categories;
+      return _categories;
+    } on SocketException {
+      rethrow;
+    } on PlatformException {
+      rethrow;
+    } on FirebaseException {
+      rethrow;
+    }
   }
 }

@@ -37,35 +37,39 @@ class FirebaseStorageService implements StorageService {
   /// iterate through the files and get download url
   /// get a download url for an image.
   Future<List<Map<String, List<dynamic>>>> getImageURL(String reference) async {
-    List<Map<String, List<dynamic>>> downloadUrls = [];
-    ListResult result;
+    try {
+      List<Map<String, List<dynamic>>> downloadUrls = [];
+      ListResult result;
 
-    result = await listFilesInStorageFolders(reference: reference);
+      result = await listFilesInStorageFolders(reference: reference);
 
-    // call two seperate methods one to handle directories and another regular files.
-    if (result.prefixes.isNotEmpty) {
-      for (var prefix in result.prefixes) {
-        var path = prefix.fullPath;
-        result = await listFilesInStorageFolders(reference: path);
-        var name = prefix.fullPath.split("/")[1];
-        var data = await downloadUrlHelper(result.items, name);
-        // 1. Call a function and pass result.items and optional name key as parameters
-        // 2. the function should return a map with download urls.
-        // 3. the map object you have string key and lists and values  e.g. {"a": ["b", "c", "d"]}
+      // call two seperate methods one to handle directories and another regular files.
+      if (result.prefixes.isNotEmpty) {
+        for (var prefix in result.prefixes) {
+          var path = prefix.fullPath;
+          result = await listFilesInStorageFolders(reference: path);
+          var name = prefix.fullPath.split("/")[1];
+          var data = await downloadUrlHelper(result.items, name);
+          // 1. Call a function and pass result.items and optional name key as parameters
+          // 2. the function should return a map with download urls.
+          // 3. the map object you have string key and lists and values  e.g. {"a": ["b", "c", "d"]}
+
+          downloadUrls.add(data);
+        }
+        return downloadUrls;
+      }
+
+      for (var i = 0; i < result.items.length; ++i) {
+        var name = result.items[i].name.split(".")[0];
+        var item = result.items[i];
+        var data = await downloadUrlHelperFunc(item, name);
 
         downloadUrls.add(data);
       }
       return downloadUrls;
+    } on SocketException {
+      throw SocketException('Failed to download');
     }
-
-    for (var i = 0; i < result.items.length; ++i) {
-      var name = result.items[i].name.split(".")[0];
-      var item = result.items[i];
-      var data = await downloadUrlHelperFunc(item, name);
-
-      downloadUrls.add(data);
-    }
-    return downloadUrls;
   }
 
   Future<Map<String, List<dynamic>>> downloadUrlHelperFunc(
