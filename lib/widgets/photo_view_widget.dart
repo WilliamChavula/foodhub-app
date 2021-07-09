@@ -81,13 +81,12 @@ class _PhotoViewWidgetState extends State<PhotoViewWidget> {
   PhotoViewGalleryPageOptions _buildItem(BuildContext context, int index) {
     final String item = widget.galleryItems[index];
     return PhotoViewGalleryPageOptions(
-      minScale: PhotoViewComputedScale.contained,
-      maxScale: PhotoViewComputedScale.contained,
-      imageProvider: CachedNetworkImageProvider(item),
-      initialScale: PhotoViewComputedScale.contained,
-      heroAttributes:
-          PhotoViewHeroAttributes(tag: '${widget.restaurantName}-$index'),
-      // onTapDown: (context, tapDetails, controller) => Navigator.pop(context),
-    );
+        minScale: PhotoViewComputedScale.contained * (0.5 + index / 10),
+        maxScale: PhotoViewComputedScale.covered * 4.1,
+        imageProvider: CachedNetworkImageProvider(item),
+        initialScale: PhotoViewComputedScale.contained,
+        heroAttributes:
+            PhotoViewHeroAttributes(tag: '${widget.restaurantName}-$index'),
+        tightMode: false);
   }
 }

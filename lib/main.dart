@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mealsApp/services/firebase_auth.dart';
 import './bloc/categories_bloc/foodhub_bloc.dart';
 import './bloc/restaurant_bloc/restaurant_bloc.dart';
 import './services/repository_service.dart';
@@ -13,6 +14,7 @@ import 'services/firebase_storage_service.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await SignInWithFirebaseAuth().signIn();
   runApp(MyApp());
 }
 
