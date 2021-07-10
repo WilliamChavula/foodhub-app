@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:delayed_display/delayed_display.dart';
-import 'package:mealsApp/widgets/photo_view_widget.dart';
+import 'package:flutter_sliding_up_panel/sliding_up_panel_widget.dart';
+import 'package:mealsApp/widgets/restaurant_carousel_image_slider.dart';
 
 import '../widgets/loading_indicator.dart';
 import '../models/restaurant.dart';
@@ -9,6 +10,7 @@ import '../widgets/custom_restaurant_sliver_appbar.dart';
 import '../utils/constants.dart';
 import '../extensions/capitalize_word_ext.dart';
 import '../extensions/trim_whiteSpace_ext.dart';
+import 'sliding_up_widget.dart';
 
 class RestaurantDetail extends StatefulWidget {
   final Restaurant restaurantData;
@@ -22,41 +24,75 @@ class RestaurantDetail extends StatefulWidget {
 }
 
 class _RestaurantDetailState extends State<RestaurantDetail> {
+  ScrollController _scrollController;
+
+  ///The controller of sliding up panel
+  SlidingUpPanelController panelController = SlidingUpPanelController();
+
+  @override
+  void initState() {
+    _scrollController = ScrollController();
+    _scrollController.addListener(() {
+      if (_scrollController.offset >=
+              _scrollController.position.maxScrollExtent &&
+          !_scrollController.position.outOfRange) {
+        panelController.expand();
+      } else if (_scrollController.offset <=
+              _scrollController.position.minScrollExtent &&
+          !_scrollController.position.outOfRange) {
+        panelController.anchor();
+      } else {}
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final List<String> imgs = widget.restaurantData.images.cast<String>();
-    return Scaffold(
-      body: CustomScrollView(
-        slivers: <Widget>[
-          CustomSliverAppBar(
-            imageURL: widget.restaurantData.imageURL,
-            imageFit: BoxFit.fitWidth,
-            id: widget.restaurantData.id,
-          ),
-          SliverFillRemaining(
-            child: DelayedDisplay(
-              delay: Duration(milliseconds: 500),
-              slidingBeginOffset: const Offset(0.0, 0.0),
-              child: Padding(
-                padding: EdgeInsets.only(top: 8.0, left: 10.0, right: 8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(widget.restaurantData.name,
-                        style: kRestaurantDetailPageHeaderStyle.copyWith(
-                            fontSize: 28)),
-                    _locationAndContactInfo(),
-                    const SizedBox(height: 16.0),
-                    Expanded(
-                      child: _overviewAndPhotos(context, imgs),
-                    ),
-                  ],
-                ),
+    return Stack(
+      children: [
+        Scaffold(
+          body: CustomScrollView(
+            slivers: <Widget>[
+              CustomSliverAppBar(
+                imageURL: widget.restaurantData.imageURL,
+                imageFit: BoxFit.fitWidth,
+                id: widget.restaurantData.id,
               ),
-            ),
-          )
-        ],
-      ),
+              SliverFillRemaining(
+                child: DelayedDisplay(
+                  delay: Duration(milliseconds: 500),
+                  slidingBeginOffset: const Offset(0.0, 0.0),
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 8.0, left: 10.0, right: 8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(widget.restaurantData.name,
+                            style: kRestaurantDetailPageHeaderStyle.copyWith(
+                                fontSize: 28)),
+                        _locationAndContactInfo(),
+                        const SizedBox(height: 16.0),
+                        Expanded(
+                          child: _overviewAndPhotos(context, imgs),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+        SlidingUpScreenWidget(
+          isCarouselImages: true,
+          panelController: panelController,
+          slidingUpWidgetContent: restaurantImagesCarouselSlider(
+            context,
+            restaurantMealSamplesImages: imgs,
+          ),
+        ),
+      ],
     );
   }
 
@@ -129,13 +165,7 @@ class _RestaurantDetailState extends State<RestaurantDetail> {
           width: 40,
           height: 40,
           child: GestureDetector(
-            onTap: () =>
-                Navigator.of(context).push(MaterialPageRoute<PhotoViewWidget>(
-                    builder: (_) => PhotoViewWidget(
-                          galleryItems: imgs,
-                          index: index,
-                          restaurantName: widget.restaurantData.name,
-                        ))),
+            onTap: () => panelController.expand(),
             child: CachedNetworkImage(
               fit: BoxFit.cover,
               imageUrl: imgs[index].stripWhiteSpace(),
