@@ -84,7 +84,7 @@ class _CategoriesScreenState extends State<CategoriesScreen>
                     }
                     if (state is FoodhubCategoryLoadingError) {
                       return ErrorScreen(errorMessage: state.errorMessage);
-                    } //TODO: handle error state here
+                    }
 
                     return LoadingIndicatorWidget(
                         size: MediaQuery.of(context).size);

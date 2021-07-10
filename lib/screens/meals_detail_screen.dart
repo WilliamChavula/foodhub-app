@@ -8,6 +8,7 @@ import '../models/restaurant.dart';
 import '../utils/constants.dart';
 import '../widgets/CustomRestaurantListTile.dart';
 import './../widgets/custom_sliver_appbar.dart';
+import 'error_screen.dart';
 
 class MealsDetail extends StatefulWidget {
   final String categoryID;
@@ -80,6 +81,9 @@ class _MealsDetailState extends State<MealsDetail> {
                             ))
                   ]);
                 });
+          }
+          if (state is FoodhubRestaurantLoadingError) {
+            return ErrorScreen(errorMessage: state.errorMessage);
           }
           return LoadingIndicatorWidget(size: size);
         },

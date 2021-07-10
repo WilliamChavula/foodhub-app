@@ -16,25 +16,28 @@ class PhotoViewWidget extends StatefulWidget {
 }
 
 class _PhotoViewWidgetState extends State<PhotoViewWidget> {
-  PageController _pageController = PageController();
   int currentIndex;
 
   void onPageChanged(int index) {
-    setState(() {
-      currentIndex = index;
-    });
+    indexController(index);
+  }
+
+  void indexController(index) {
+    if (currentIndex == widget.galleryItems.length - 1) {
+      setState(() {
+        currentIndex = 0;
+      });
+    } else {
+      setState(() {
+        ++currentIndex;
+      });
+    }
   }
 
   @override
   void initState() {
     currentIndex = widget.index;
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
   }
 
   @override
@@ -59,7 +62,6 @@ class _PhotoViewWidgetState extends State<PhotoViewWidget> {
             loadingBuilder: (context, _) => LoadingIndicatorWidget(
               size: MediaQuery.of(context).size,
             ),
-            pageController: _pageController,
             onPageChanged: onPageChanged,
             scrollDirection: Axis.horizontal,
           ),
@@ -81,12 +83,12 @@ class _PhotoViewWidgetState extends State<PhotoViewWidget> {
   PhotoViewGalleryPageOptions _buildItem(BuildContext context, int index) {
     final String item = widget.galleryItems[index];
     return PhotoViewGalleryPageOptions(
-        minScale: PhotoViewComputedScale.contained * (0.5 + index / 10),
-        maxScale: PhotoViewComputedScale.covered * 4.1,
-        imageProvider: CachedNetworkImageProvider(item),
-        initialScale: PhotoViewComputedScale.contained,
-        heroAttributes:
-            PhotoViewHeroAttributes(tag: '${widget.restaurantName}-$index'),
-        tightMode: false);
+      minScale: PhotoViewComputedScale.contained * (0.5 + index / 10),
+      maxScale: PhotoViewComputedScale.covered * 4.0,
+      imageProvider: CachedNetworkImageProvider(item),
+      initialScale: PhotoViewComputedScale.contained,
+      heroAttributes:
+          PhotoViewHeroAttributes(tag: '${widget.restaurantName}-$index'),
+    );
   }
 }

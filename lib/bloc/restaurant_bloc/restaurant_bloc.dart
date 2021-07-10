@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 import 'package:mealsApp/models/restaurant.dart';
 import 'package:meta/meta.dart';
 import '../../services/restaurant_service.dart';
@@ -16,6 +18,8 @@ class FoodhubRestaurantBloc
         super(FoodhubInitial());
 
   final RestaurantRepository restaurantRepositoryService;
+  final _errorMessage =
+      "Please verify that you have an active internet connection and try again later";
 
   @override
   Stream<FoodhubRestaurantState> mapEventToState(
@@ -30,6 +34,10 @@ class FoodhubRestaurantBloc
       } on SocketException catch (_) {
         yield FoodhubRestaurantLoadingError(
             errorMessage: "No Internet connection. Please try again later.");
+      } on PlatformException {
+        yield FoodhubRestaurantLoadingError(errorMessage: _errorMessage);
+      } on FirebaseException {
+        yield FoodhubRestaurantLoadingError(errorMessage: _errorMessage);
       } catch (e) {
         yield FoodhubRestaurantLoadingError(errorMessage: e.message);
       }
