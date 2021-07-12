@@ -16,7 +16,7 @@ class CategoryRepositoryService implements CategoryRepository {
   List<Map<String, List<dynamic>>> imagesCollection;
 
   Future<List<CuisineCategory>> get categories async {
-    // if (_categories != null) return _categories;
+    if (_categories != null) return _categories;
 
     try {
       final querySnapshot =

@@ -38,9 +38,9 @@ class _MealsDetailState extends State<MealsDetail> {
 
   @override
   void initState() {
-    context
-        .read<FoodhubRestaurantBloc>()
-        .add(LoadRestaurantEvent(widget.categoryTitle));
+    context.read<FoodhubRestaurantBloc>().add(LoadRestaurantEvent(
+          restaurantCategoryTitle: widget.categoryTitle,
+        ));
     super.initState();
   }
 
@@ -58,7 +58,6 @@ class _MealsDetailState extends State<MealsDetail> {
                   if (!asyncSnapshot.hasData) {
                     return LoadingIndicatorWidget(size: size);
                   }
-                  restaurantByCuisine = filterList(asyncSnapshot.data);
                   return CustomScrollView(slivers: <Widget>[
                     CustomSliverAppBar(
                       imageURL: widget.categoryImageUrl,
@@ -71,13 +70,13 @@ class _MealsDetailState extends State<MealsDetail> {
                     LiveSliverList.options(
                         controller: _scrollController,
                         options: options,
-                        itemCount: restaurantByCuisine.length,
+                        itemCount: asyncSnapshot.data.length,
                         itemBuilder: (context, index, animation) =>
                             buildCustomRestaurantListTile(
                               context,
                               index,
                               animation,
-                              restaurantByCuisine,
+                              asyncSnapshot.data,
                             ))
                   ]);
                 });
@@ -98,14 +97,4 @@ class _MealsDetailState extends State<MealsDetail> {
           style: kRestaurantDetailPageHeaderStyle,
         ),
       );
-
-  List<Restaurant> filterList(List<Restaurant> unfilteredList) {
-    /// filters Restaurant list
-    /// returns list of [List<Restaurant>] that match the category name the user clicked
-    var categoryName = widget.categoryTitle.toLowerCase();
-    List<Restaurant> filteredList = unfilteredList
-        .where((elem) => elem.categoryName.contains(categoryName))
-        .toList();
-    return filteredList;
-  }
 }

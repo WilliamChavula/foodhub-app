@@ -73,7 +73,9 @@ class _SlidingUpScreenWidgetState extends State<SlidingUpScreenWidget> {
             ),
 
             /// TODO: Put carousel image slider here
-            widget.slidingUpWidgetContent,
+            Expanded(
+              child: widget.slidingUpWidgetContent,
+            ),
           ],
           mainAxisSize: MainAxisSize.min,
         ),

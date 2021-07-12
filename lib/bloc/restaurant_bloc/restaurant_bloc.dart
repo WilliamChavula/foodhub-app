@@ -13,11 +13,11 @@ part 'restaurant_state.dart';
 
 class FoodhubRestaurantBloc
     extends Bloc<FoodhubRestaurantEvent, FoodhubRestaurantState> {
-  FoodhubRestaurantBloc({@required this.restaurantRepositoryService})
-      : assert(restaurantRepositoryService != null),
+  FoodhubRestaurantBloc({@required this.service})
+      : assert(service != null),
         super(FoodhubInitial());
 
-  final RestaurantRepository restaurantRepositoryService;
+  final RestaurantRepository service;
   final _errorMessage =
       "Please verify that you have an active internet connection and try again later";
 
@@ -28,7 +28,14 @@ class FoodhubRestaurantBloc
     if (event is LoadRestaurantEvent) {
       yield FoodhubRestaurantLoading();
       try {
-        final restaurants = this.restaurantRepositoryService.restaurants;
+        Future<List<Restaurant>> restaurants;
+        if (event.restaurantCategoryTitle != null) {
+          restaurants = this
+              .service
+              .getFilteredRestaurants(event.restaurantCategoryTitle);
+        } else {
+          restaurants = this.service.allRestaurants;
+        }
 
         yield FoodhubRestaurantsLoaded(restaurants: restaurants);
       } on SocketException catch (_) {
@@ -39,7 +46,7 @@ class FoodhubRestaurantBloc
       } on FirebaseException {
         yield FoodhubRestaurantLoadingError(errorMessage: _errorMessage);
       } catch (e) {
-        yield FoodhubRestaurantLoadingError(errorMessage: e.message);
+        yield FoodhubRestaurantLoadingError(errorMessage: e.toString());
       }
     }
   }

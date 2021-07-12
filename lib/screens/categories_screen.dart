@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_sliding_up_panel/sliding_up_panel_widget.dart';
 import 'package:mealsApp/bloc/categories_bloc/foodhub_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:mealsApp/screens/sliding_up_widget.dart';
 import 'package:mealsApp/widgets/loading_indicator.dart';
+import 'package:mealsApp/widgets/search_widget.dart';
 import '../models/Category.dart';
 import './meals_detail_screen.dart';
 
@@ -18,103 +21,93 @@ class CategoriesScreen extends StatefulWidget {
 class _CategoriesScreenState extends State<CategoriesScreen>
     with SingleTickerProviderStateMixin {
   List<CuisineCategory> categories = [];
-  String _searchValue;
 
-  final TextEditingController _controller = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-
-    // add LoadEvent to the bloc to start process of fetching data from Firebase
-    // context.read<FoodhubBloc>().add(LoadCategoriesEvent());
-  }
+  SlidingUpPanelController _panelController = SlidingUpPanelController();
 
   @override
-  void dispose() {
-    super.dispose();
-
-    // dispose the TextEditingController when the Widget is removed from the Widget tree
-    _controller.dispose();
-  }
-
-  _handleSearchSubmit(BuildContext context, String searchInput) {
-    print(searchInput);
-    _controller.text = "";
-    FocusScope.of(context).unfocus(); // remove focus and dismiss keyboard
-    /*TODO
-    * filter restaurant list for items matching search term
-    * display results into the UI
-    * add error handling for empty search terms
-    */
-  }
-
-  @override
-  Widget build(BuildContext context) => Scaffold(
-        backgroundColor: kBackgroundColorStyle,
-        body: SafeArea(
-          child: Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildPageTitleText(),
-                _buildPageSloganText(),
-                SizedBox(height: 12.0),
-                _buildSearchInputWidget(context),
-                SizedBox(height: 16.0),
-                Expanded(
-                  child: BlocBuilder<FoodhubBloc, FoodhubState>(
-                      builder: (BuildContext context, FoodhubState state) {
-                    if (state is FoodhubCategoryLoaded) {
-                      return FutureBuilder<List<CuisineCategory>>(
-                          future: state.cuisineCategory,
-                          builder: (BuildContext context, snapshot) {
-                            // if (!snapshot.hasData)
-                            //   return LoadingIndicatorWidget(
-                            //       size: MediaQuery.of(context).size);
-                            // if (snapshot.hasError) {
-                            //   print(snapshot.error);
-                            //   return ErrorScreen(errorMessage: 'error');
-                            // }
-
-                            return _buildStaggeredGrid(snapshot.data);
-                          });
-                    }
-                    if (state is FoodhubCategoryLoadingError) {
-                      return ErrorScreen(errorMessage: state.errorMessage);
-                    }
-
-                    return LoadingIndicatorWidget(
-                        size: MediaQuery.of(context).size);
-                  }),
+  Widget build(BuildContext context) => Stack(
+        children: [
+          Scaffold(
+            floatingActionButton: Container(
+              width: 48.0,
+              height: 48.0,
+              decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.6), //color of shadow
+                    spreadRadius: 2, //spread radius
+                    blurRadius: 4, // blur radius
+                    offset: Offset(1, 1), // changes position of shadow
+                    //first paramerter of offset is left-right
+                    //second parameter is top to down
+                  ),
+                ],
+                borderRadius: BorderRadius.circular(24.0),
+                color: Color(0XFFBD6600),
+              ),
+              child: Center(
+                child: IconButton(
+                  icon: Icon(
+                    Icons.search,
+                    color: Colors.white,
+                  ),
+                  onPressed: _panelController.expand,
                 ),
-              ],
+              ),
+            ),
+            backgroundColor: kBackgroundColorStyle,
+            body: SafeArea(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 12.0),
+                    _buildPageTitleText(),
+                    SizedBox(height: 16.0),
+                    _buildPageSloganText(),
+                    SizedBox(height: 16.0),
+                    Expanded(
+                      child: BlocBuilder<FoodhubBloc, FoodhubState>(
+                          builder: (BuildContext context, FoodhubState state) {
+                        if (state is FoodhubCategoryLoaded) {
+                          return FutureBuilder<List<CuisineCategory>>(
+                              future: state.cuisineCategory,
+                              builder: (BuildContext context, snapshot) {
+                                if (!snapshot.hasData)
+                                  return LoadingIndicatorWidget(
+                                      size: MediaQuery.of(context).size);
+
+                                return _buildStaggeredGrid(snapshot.data);
+                              });
+                        }
+                        if (state is FoodhubCategoryLoadingError) {
+                          return ErrorScreen(errorMessage: state.errorMessage);
+                        }
+
+                        return LoadingIndicatorWidget(
+                            size: MediaQuery.of(context).size);
+                      }),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
-        ),
+          SlidingUpScreenWidget(
+            panelController: _panelController,
+            slidingUpWidgetContent: SlidingUpSearchWidget(),
+          )
+        ],
       );
-
-  Row _buildSearchInputWidget(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(child: _buildSearchInput(_controller)),
-        IconButton(
-          onPressed: () => _handleSearchSubmit(context, _searchValue),
-          icon: Icon(Icons.search),
-          iconSize: 28.0,
-        )
-      ],
-    );
-  }
 
   Text _buildPageSloganText() {
     return Text(
-      "Discover Malawi's finest cuisine",
+      "Discover Malawi's finest cuisine and upcoming dining spots",
       style: TextStyle(
           color: Color(0XFF525B76),
-          fontSize: 18.0,
+          fontSize: 16.0,
           fontFamily: 'NunitoSans',
           fontWeight: FontWeight.w500),
     );
@@ -122,7 +115,7 @@ class _CategoriesScreenState extends State<CategoriesScreen>
 
   Text _buildPageTitleText() {
     return Text(
-      'FoodHub',
+      'Tidye',
       style: kRestaurantDetailPageHeaderStyle,
     );
   }
@@ -192,34 +185,5 @@ class _CategoriesScreenState extends State<CategoriesScreen>
             ),
           ),
         ],
-      );
-
-  TextField _buildSearchInput(TextEditingController controller) => TextField(
-        controller: controller,
-        onChanged: (val) {
-          this.setState(() {
-            _searchValue = val;
-          });
-        },
-        decoration: InputDecoration(
-          border: OutlineInputBorder(),
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Color(0XFF139A43)),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Color(0XFF139A43)),
-          ),
-          isDense: true,
-          contentPadding: const EdgeInsets.all(12.0),
-          labelText: "Search...",
-          labelStyle: TextStyle(color: Color(0XFF525B76), fontSize: 14.0),
-          hintText: "Search by Cuisine or Restaurant name...",
-          hintStyle: TextStyle(
-            color: Color(0XFF525B76),
-            fontStyle: FontStyle.italic,
-            fontSize: 12.0,
-          ),
-        ),
-        style: TextStyle(color: Color(0XFF100B00)),
       );
 }

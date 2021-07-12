@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider<FoodhubRestaurantBloc>(
           create: (context) => FoodhubRestaurantBloc(
-            restaurantRepositoryService: RestaurantRepositoryService(),
+            service: RestaurantRepositoryService(),
           ),
         ),
         BlocProvider<FoodhubBloc>(
