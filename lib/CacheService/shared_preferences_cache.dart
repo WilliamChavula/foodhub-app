@@ -9,7 +9,10 @@ class SharedPreferencesCache implements ICacheService {
 
   @override
   Future<bool> addToCache(
-      String key, String dataToCache, String collectionName) async {
+    String key,
+    String dataToCache,
+    String collectionName,
+  ) async {
     try {
       final dateFetched = DateTime.now();
       final isAdded = await _instance.setString(
@@ -58,23 +61,26 @@ class SharedPreferencesCache implements ICacheService {
   static bool validateDataNotStale(String collectionName) {
     // today's date
     final dateToday = DateTime.now();
-
     // fetch the date when the data was added to the cache
-    final dateAdded = _instance.getString(collectionName);
+    if (_instance.containsKey(collectionName)) {
+      final dateAdded = _instance.getString(collectionName);
 
-    // parse the string to a DateTime object
-    final dateDataGotCached = DateTime.parse(dateAdded);
+      // parse the string to a DateTime object
+      final dateDataGotCached = DateTime.parse(dateAdded);
 
-    // perform DateTime Arithmetic
-    final daysElapsed = dateToday.difference(dateDataGotCached);
+      // perform DateTime Arithmetic
+      final daysElapsed = dateToday.difference(dateDataGotCached);
 
-    // check if the data is still valid
-    if (daysElapsed.inDays > ICacheService.maxNumberOfDays) {
-      // data is state
-      return true;
+      // check if the data is still valid
+      if (daysElapsed.inDays > ICacheService.maxNumberOfDays) {
+        // data is stale
+        return true;
+      } else {
+        // data is not stale
+        return false;
+      }
     } else {
-      // data is not stale
-      return false;
+      return true;
     }
   }
 }
