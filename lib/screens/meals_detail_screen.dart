@@ -48,7 +48,7 @@ class _MealsDetailState extends State<MealsDetail> {
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: kScaffoldColor,
       body: BlocBuilder<FoodhubRestaurantBloc, FoodhubRestaurantState>(
         builder: (context, state) {
           if (state is FoodhubRestaurantsLoaded) {
@@ -58,27 +58,30 @@ class _MealsDetailState extends State<MealsDetail> {
                   if (!asyncSnapshot.hasData) {
                     return LoadingIndicatorWidget(size: size);
                   }
-                  return CustomScrollView(slivers: <Widget>[
-                    CustomSliverAppBar(
-                      imageURL: widget.categoryImageUrl,
-                      imageFit: BoxFit.cover,
-                      id: widget.categoryID,
-                    ),
-                    SliverToBoxAdapter(
-                      child: _buildRestaurantDetailCategoryName(),
-                    ),
-                    LiveSliverList.options(
+                  return CustomScrollView(
+                    slivers: <Widget>[
+                      CustomSliverAppBar(
+                        imageURL: widget.categoryImageUrl,
+                        imageFit: BoxFit.cover,
+                        id: widget.categoryID,
+                      ),
+                      SliverToBoxAdapter(
+                        child: _buildRestaurantDetailCategoryName(),
+                      ),
+                      LiveSliverList.options(
                         controller: _scrollController,
                         options: options,
                         itemCount: asyncSnapshot.data.length,
                         itemBuilder: (context, index, animation) =>
                             buildCustomRestaurantListTile(
-                              context,
-                              index,
-                              animation,
-                              asyncSnapshot.data,
-                            ))
-                  ]);
+                          context,
+                          index,
+                          animation,
+                          asyncSnapshot.data,
+                        ),
+                      )
+                    ],
+                  );
                 });
           }
           if (state is FoodhubRestaurantLoadingError) {
@@ -91,7 +94,8 @@ class _MealsDetailState extends State<MealsDetail> {
   }
 
   Container _buildRestaurantDetailCategoryName() => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+        padding: const EdgeInsets.symmetric(
+            horizontal: kSmallSpaceUnits, vertical: kSmallSpaceUnits),
         child: Text(
           widget.categoryTitle,
           style: kRestaurantDetailPageHeaderStyle,
