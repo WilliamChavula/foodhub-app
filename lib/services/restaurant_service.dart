@@ -33,7 +33,8 @@ class RestaurantRepositoryService implements RestaurantRepository {
     List<Restaurant> restaurants;
 
     try {
-      final restaurantsList = await restaurantCollection.get();
+      final restaurantsList = await restaurantCollection
+          .get(GetOptions(source: Source.serverAndCache));
 
       restaurants = _restaurantFromSnapshot(restaurantsList);
 
