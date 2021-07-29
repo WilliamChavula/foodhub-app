@@ -56,9 +56,7 @@ class FoodhubBloc extends Bloc<FoodhubEvent, FoodhubState> {
           errorMessage: _errorMessage,
         );
       } catch (e) {
-        yield FoodhubCategoryLoadingError(
-            errorMessage:
-                "Uhm! Something weird happened \n Drink some coffee.");
+        yield FoodhubCategoryLoadingError(errorMessage: e.message);
       }
     }
   }

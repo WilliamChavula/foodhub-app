@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mealsApp/utils/constants.dart';
-import '../utils/constants.dart';
 
 class ErrorScreen extends StatelessWidget {
   final String errorMessage;
@@ -9,8 +8,7 @@ class ErrorScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-          horizontal: kMediumSpaceUnits, vertical: kMediumSpaceUnits),
+      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -19,15 +17,13 @@ class ErrorScreen extends StatelessWidget {
             fit: BoxFit.contain,
           ),
           SizedBox(
-            height: kMediumSpaceUnits,
+            height: 10.0,
           ),
           Text(
             errorMessage,
             textAlign: TextAlign.center,
             style: kListTileTextStyle.copyWith(
-              fontWeight: FontWeight.w400,
-              fontSize: kSubHeaderFontSize,
-            ),
+                fontWeight: FontWeight.w400, fontSize: 18.0),
           ),
         ],
       ),

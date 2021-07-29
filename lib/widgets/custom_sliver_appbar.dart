@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:mealsApp/utils/constants.dart';
 
 class CustomSliverAppBar extends StatelessWidget {
   final String imageURL;
@@ -17,9 +16,7 @@ class CustomSliverAppBar extends StatelessWidget {
   Container _heroImageWidget() => Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: CachedNetworkImageProvider(imageURL),
-            fit: imageFit,
-          ),
+              image: CachedNetworkImageProvider(imageURL), fit: imageFit),
         ),
       );
 
@@ -27,9 +24,9 @@ class CustomSliverAppBar extends StatelessWidget {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              kImageGradientColor1,
-              kImageGradientColor2,
-              kImageGradientColor3,
+              Colors.black.withOpacity(0.3),
+              Colors.black.withOpacity(0.1),
+              Colors.black.withOpacity(0.01)
             ],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,

@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_sliding_up_panel/sliding_up_panel_widget.dart';
+// import 'package:cached_network_image/cached_network_image.dart';
+// import 'package:photo_view/photo_view.dart';
+// import 'package:photo_view/photo_view_gallery.dart';
+
+// import 'loading_indicator.dart';
 
 class SlidingUpScreenWidget extends StatefulWidget {
   final SlidingUpPanelController panelController;
   final Widget slidingUpWidgetContent;
   final bool isCarouselImages;
-  final TextEditingController editingController;
 
   const SlidingUpScreenWidget({
     @required this.panelController,
     this.slidingUpWidgetContent,
     this.isCarouselImages = false,
-    this.editingController,
   });
 
   @override
@@ -31,9 +34,6 @@ class _SlidingUpScreenWidgetState extends State<SlidingUpScreenWidget> {
   Widget build(BuildContext context) {
     final _color =
         widget.isCarouselImages ? Colors.black.withOpacity(0.8) : Colors.white;
-
-    const Radius kRadius = Radius.circular(10.0);
-
     return SlidingUpPanelWidget(
       child: Container(
         decoration: ShapeDecoration(
@@ -42,12 +42,12 @@ class _SlidingUpScreenWidgetState extends State<SlidingUpScreenWidget> {
             BoxShadow(
                 blurRadius: 5.0,
                 spreadRadius: 2.0,
-                color: const Color(0x80000000))
+                color: const Color(0x11000000))
           ],
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
-              topLeft: kRadius,
-              topRight: kRadius,
+              topLeft: Radius.circular(10.0),
+              topRight: Radius.circular(10.0),
             ),
           ),
         ),
@@ -61,11 +61,7 @@ class _SlidingUpScreenWidgetState extends State<SlidingUpScreenWidget> {
               child: IconButton(
                 color: widget.isCarouselImages ? Colors.white : Colors.black,
                 icon: Icon(Icons.close),
-                onPressed: () {
-                  panelController.hide();
-                  FocusScope.of(context).unfocus();
-                  widget.editingController?.clear();
-                },
+                onPressed: () => panelController.hide(),
               ),
             ),
             Divider(
@@ -75,6 +71,8 @@ class _SlidingUpScreenWidgetState extends State<SlidingUpScreenWidget> {
             SizedBox(
               height: 20.0,
             ),
+
+            /// TODO: Put carousel image slider here
             Expanded(
               child: widget.slidingUpWidgetContent,
             ),
@@ -85,9 +83,15 @@ class _SlidingUpScreenWidgetState extends State<SlidingUpScreenWidget> {
       controlHeight: 0.0,
       anchor: 0.4,
       panelController: panelController,
-      dragStart: (_) => FocusScope.of(context).unfocus(),
-      //Pass a onTap callback to customize the processing logic when user click control bar.
-      enableOnTap: false,
+      onTap: () {
+        ///Customize the processing logic
+        if (SlidingUpPanelStatus.expanded == panelController.status) {
+          panelController.hide();
+        } else {
+          panelController.expand();
+        }
+      }, //Pass a onTap callback to customize the processing logic when user click control bar.
+      enableOnTap: true,
     );
   }
 }

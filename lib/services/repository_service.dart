@@ -19,8 +19,8 @@ class CategoryRepositoryService implements CategoryRepository {
     if (_categories != null) return _categories;
 
     try {
-      final querySnapshot = await categoryCollection
-          .get(GetOptions(source: Source.serverAndCache));
+      final querySnapshot =
+          await categoryCollection.get(GetOptions(source: Source.server));
 
       _categories = querySnapshot.docs
           .map((doc) => CuisineCategory.fromMap(doc.data(), doc.id))

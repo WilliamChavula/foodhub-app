@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
-import '../utils/constants.dart';
 
 class LoadingIndicatorWidget extends StatelessWidget {
   final Size size;
@@ -16,7 +15,7 @@ class LoadingIndicatorWidget extends StatelessWidget {
         height: calculatedSize,
         child: LoadingIndicator(
           indicatorType: Indicator.ballClipRotateMultiple,
-          color: kBoldOrangeColor,
+          color: Colors.green[200],
         ),
       ),
     );

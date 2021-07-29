@@ -13,9 +13,7 @@ import 'package:mealsApp/utils/constants.dart';
 import 'loading_indicator.dart';
 
 class SlidingUpSearchWidget extends StatefulWidget {
-  final TextEditingController searchInputController;
-
-  const SlidingUpSearchWidget({this.searchInputController});
+  const SlidingUpSearchWidget();
 
   @override
   _SlidingUpSearchWidgetState createState() => _SlidingUpSearchWidgetState();
@@ -28,10 +26,12 @@ class _SlidingUpSearchWidgetState extends State<SlidingUpSearchWidget> {
   List<Restaurant> search = [];
   Timer delayQuerying;
 
+  final TextEditingController _searchInputController = TextEditingController();
+
   @override
   void initState() {
-    
-    widget.searchInputController.addListener(() {
+    context.read<FoodhubRestaurantBloc>().add(LoadRestaurantEvent());
+    _searchInputController.addListener(() {
       _setRestaurants(context, restaurants: search);
       setState(() {});
     });
@@ -40,7 +40,7 @@ class _SlidingUpSearchWidgetState extends State<SlidingUpSearchWidget> {
 
   @override
   void dispose() {
-    widget.searchInputController.dispose();
+    _searchInputController.dispose();
     delayQuerying.cancel();
     super.dispose();
   }
@@ -50,25 +50,39 @@ class _SlidingUpSearchWidgetState extends State<SlidingUpSearchWidget> {
     search = List.from(restaurantList);
 
     performSearch();
+    // FocusScope.of(context).unfocus();
     search.sort((a, b) => a.name.compareTo(b.name));
   }
 
   void performSearch() {
-    if (widget.searchInputController.text != null) {
+    if (_searchInputController.text != null) {
       search.retainWhere(
         (restaurant) => restaurant.name.toLowerCase().contains(
-              widget.searchInputController.text.toLowerCase(),
+              _searchInputController.text.toLowerCase(),
             ),
       );
     }
   }
 
   List<String> _setRestaurantStrings(List<Restaurant> restaurants) {
-    Iterable<String> uniqueRestaurantMap = restaurants.map((item) => item.name);
-    uniqueRestaurantNames = uniqueRestaurantMap.toSet().toList();
+    uniqueRestaurantNames =
+        restaurants.map((item) => item.name).toSet().toList();
     uniqueRestaurantNames.sort((a, b) => a.compareTo(b));
     return uniqueRestaurantNames;
   }
+
+  // void _handleSearchSubmit({String searchText}) {
+  //   print(searchText);
+  //   if (searchText != null) {
+  //     print(searchText);
+  //     search.retainWhere(
+  //       (restaurant) => restaurant.name.toLowerCase().contains(
+  //             _searchInputController.text.toLowerCase(),
+  //           ),
+  //     );
+  //   }
+  //   print(search.length);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -84,45 +98,45 @@ class _SlidingUpSearchWidgetState extends State<SlidingUpSearchWidget> {
 
   Widget _buildSearchInputWidget(BuildContext context) {
     return Padding(
-      padding: kLargePadding,
-      child: _buildSearchInput(widget.searchInputController),
+      padding: const EdgeInsets.all(16.0),
+      child: _buildSearchInput(_searchInputController),
     );
   }
 
-  Widget _buildSearchInput(TextEditingController controller) {
-    const TextStyle kSearchLabelStyle = const TextStyle(
-      color: kBodyFontColor,
-      fontSize: 12.0,
-      fontStyle: FontStyle.italic,
-    );
-    return Theme(
-      data: Theme.of(context).copyWith(
-        // override textfield's icon color when selected
-        primaryColor: kBoldOrangeColor,
-      ),
-      child: TextField(
-        controller: controller,
-        decoration: InputDecoration(
-          floatingLabelBehavior: FloatingLabelBehavior.never,
-          suffixIcon: Icon(
-            Icons.search,
-          ),
-          focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: kBoldOrangeColor),
-          ),
-          isDense: true,
-          contentPadding: kSmallPadding,
-          labelText: kSearchHintText,
-          labelStyle: kSearchLabelStyle,
-          hintText: kSearchHintText,
-          hintStyle: kSearchLabelStyle,
+  Widget _buildSearchInput(TextEditingController controller) => Theme(
+        data: Theme.of(context).copyWith(
+          // override textfield's icon color when selected
+          primaryColor: Colors.green,
         ),
-        style: TextStyle(
-          color: kDarkBodyFontColor,
+        child: TextField(
+          // onChanged: (searchText) =>
+          //     _handleSearchSubmit(searchText: searchText),
+          controller: controller,
+          decoration: InputDecoration(
+            floatingLabelBehavior: FloatingLabelBehavior.never,
+            suffixIcon: Icon(
+              Icons.search,
+            ),
+            focusedBorder: UnderlineInputBorder(
+              borderSide: BorderSide(color: Color(0XFF139A43)),
+            ),
+            isDense: true,
+            contentPadding: const EdgeInsets.all(8.0),
+            labelText: "Search by Restaurant name...",
+            labelStyle: TextStyle(
+                color: Color(0XFF525B76),
+                fontSize: 12.0,
+                fontStyle: FontStyle.italic),
+            hintText: "Search by Restaurant name...",
+            hintStyle: TextStyle(
+              color: Color(0XFF525B76),
+              fontStyle: FontStyle.italic,
+              fontSize: 12.0,
+            ),
+          ),
+          style: TextStyle(color: Color(0XFF100B00)),
         ),
-      ),
-    );
-  }
+      );
 
   _buildRestaurantList(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -138,7 +152,7 @@ class _SlidingUpSearchWidgetState extends State<SlidingUpSearchWidget> {
               }
               _setRestaurants(context, restaurants: asyncSnapshot.data);
               return AlphabetListScrollView(
-                strList: _setRestaurantStrings(search),
+                strList: [..._setRestaurantStrings(search)],
                 indexedHeight: (_) => 60.0,
                 showPreview: true,
                 keyboardUsage: true,
@@ -163,35 +177,31 @@ Padding restaurantListTiles(
   int index,
 ) =>
     Padding(
-      padding: kMediumPadding,
+      padding: const EdgeInsets.all(10.0),
       child: GestureDetector(
-        onTap: () {
-          Navigator.push(
+        onTap: () => Navigator.push(
             context,
             MaterialPageRoute<RestaurantDetail>(
               builder: (context) => RestaurantDetail(
                 restaurantData: uniqueRestaurants[index],
               ),
-            ),
-          );
-          FocusScope.of(context).unfocus();
-        },
+            )),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Hero(
               tag: uniqueRestaurants[index].id,
               child: Container(
-                width: 40.0,
-                height: 40.0,
-                margin: EdgeInsets.only(right: kMediumSpaceUnits),
+                width: 40,
+                height: 40,
+                margin: EdgeInsets.only(right: 10),
                 decoration: BoxDecoration(
                   image: DecorationImage(
                       image: FirebaseImage(
                         uniqueRestaurants[index].imageURL,
                       ),
                       fit: BoxFit.contain),
-                  borderRadius: kBorderRadius,
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
             ),
@@ -204,7 +214,7 @@ Padding restaurantListTiles(
                     uniqueRestaurants[index].name,
                     style: kRestaurantDetailPageTileHeaderStyle.copyWith(
                       fontWeight: FontWeight.w400,
-                      fontSize: kSubHeaderFontSize,
+                      fontSize: 18.0,
                     ),
                   ),
                 ],

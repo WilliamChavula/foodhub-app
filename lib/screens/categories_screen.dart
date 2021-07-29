@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_sliding_up_panel/sliding_up_panel_widget.dart';
-import 'package:gradient_text/gradient_text.dart';
 import 'package:mealsApp/bloc/categories_bloc/foodhub_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:mealsApp/bloc/restaurant_bloc/restaurant_bloc.dart';
 import 'package:mealsApp/screens/sliding_up_widget.dart';
 import 'package:mealsApp/widgets/loading_indicator.dart';
 import 'package:mealsApp/widgets/search_widget.dart';
@@ -25,7 +23,6 @@ class _CategoriesScreenState extends State<CategoriesScreen>
   List<CuisineCategory> categories = [];
 
   SlidingUpPanelController _panelController = SlidingUpPanelController();
-  TextEditingController _searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) => Stack(
@@ -35,23 +32,18 @@ class _CategoriesScreenState extends State<CategoriesScreen>
               width: 48.0,
               height: 48.0,
               decoration: BoxDecoration(
-                gradient: LinearGradient(colors: <Color>[
-                  kBoldOrangeColor,
-                  kMidOrangeColor,
-                  kLightOrangeColor
-                ], begin: Alignment.topLeft, end: Alignment.bottomRight),
                 boxShadow: [
                   BoxShadow(
-                    color: kDarkBodyFontColor, //color of shadow
-                    spreadRadius: 1, //spread radius
-                    blurRadius: 1, // blur radius
-                    offset: Offset(0.5, 0.5), // changes position of shadow
+                    color: Colors.black.withOpacity(0.6), //color of shadow
+                    spreadRadius: 2, //spread radius
+                    blurRadius: 4, // blur radius
+                    offset: Offset(1, 1), // changes position of shadow
                     //first paramerter of offset is left-right
                     //second parameter is top to down
                   ),
                 ],
                 borderRadius: BorderRadius.circular(24.0),
-                color: kMidOrangeColor,
+                color: Color(0XFFBD6600),
               ),
               child: Center(
                 child: IconButton(
@@ -59,28 +51,23 @@ class _CategoriesScreenState extends State<CategoriesScreen>
                     Icons.search,
                     color: Colors.white,
                   ),
-                  onPressed: () {
-                    context
-                        .read<FoodhubRestaurantBloc>()
-                        .add(LoadRestaurantEvent());
-
-                    _panelController.expand();
-                  },
+                  onPressed: _panelController.expand,
                 ),
               ),
             ),
-            backgroundColor: kScaffoldColor,
+            backgroundColor: kBackgroundColorStyle,
             body: SafeArea(
               child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: kSmallSpaceUnits, vertical: kSmallSpaceUnits),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(height: 12.0),
                     _buildPageTitleText(),
+                    SizedBox(height: 16.0),
                     _buildPageSloganText(),
-                    SizedBox(height: kSizedBoxUnits),
+                    SizedBox(height: 16.0),
                     Expanded(
                       child: BlocBuilder<FoodhubBloc, FoodhubState>(
                           builder: (BuildContext context, FoodhubState state) {
@@ -110,36 +97,32 @@ class _CategoriesScreenState extends State<CategoriesScreen>
           ),
           SlidingUpScreenWidget(
             panelController: _panelController,
-            editingController: _searchController,
-            slidingUpWidgetContent: SlidingUpSearchWidget(
-              searchInputController: _searchController,
-            ),
+            slidingUpWidgetContent: SlidingUpSearchWidget(),
           )
         ],
       );
 
   Text _buildPageSloganText() {
     return Text(
-      kAppSlogan,
+      "Discover Malawi's finest cuisine and upcoming dining spots",
       style: TextStyle(
-          color: kBodyFontColor,
-          fontSize: kBody1FontSize,
+          color: Color(0XFF525B76),
+          fontSize: 16.0,
+          fontFamily: 'NunitoSans',
           fontWeight: FontWeight.w500),
     );
   }
 
-  GradientText _buildPageTitleText() {
-    return GradientText(
-      kAppTitle,
-      gradient: LinearGradient(
-          colors: [kBoldOrangeColor, kMidOrangeColor, kLightOrangeColor]),
-      style: kRestaurantDetailPageHeaderStyle.copyWith(
-          fontFamily: "AllertaStencil", fontSize: 28.0),
+  Text _buildPageTitleText() {
+    return Text(
+      'Tidye',
+      style: kRestaurantDetailPageHeaderStyle,
     );
   }
 
   StaggeredGridView _buildStaggeredGrid(List<CuisineCategory> categories) =>
       StaggeredGridView.countBuilder(
+        // padding: EdgeInsets.all(16.0),
         itemCount: categories?.length ?? 0,
         crossAxisCount: 4,
         itemBuilder: (BuildContext context, int index) {
@@ -159,8 +142,8 @@ class _CategoriesScreenState extends State<CategoriesScreen>
         },
         staggeredTileBuilder: (int index) =>
             StaggeredTile.count(2, index.isEven ? 3 : 2),
-        mainAxisSpacing: kSmallSpaceUnits,
-        crossAxisSpacing: kSmallSpaceUnits,
+        mainAxisSpacing: 4.0,
+        crossAxisSpacing: 6.0,
       );
 
   Stack _buildCategoryThumbnail(CuisineCategory cuisineCategories) => Stack(
@@ -176,31 +159,29 @@ class _CategoriesScreenState extends State<CategoriesScreen>
                       cuisineCategories.imageURL,
                     ),
                     fit: BoxFit.cover),
-                borderRadius: kBorderRadius,
+                borderRadius: BorderRadius.circular(15),
               ),
             ),
           ),
           Container(
             decoration: BoxDecoration(
-              gradient: LinearGradient(
+                gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: <Color>[
-                    kImageGradientColor1,
-                    kImageGradientColor2,
-                    kImageGradientColor3
-                  ]),
-              borderRadius: kBorderRadius,
-            ),
+                    Colors.black.withAlpha(0),
+                    Colors.black26,
+                    Colors.black54
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(15)),
           ),
           Padding(
-            padding: kSmallPadding,
+            padding: const EdgeInsets.all(8.0),
             child: Text(
               cuisineCategories.title,
               style: kRestaurantDetailPageTileHeaderStyle.copyWith(
-                color: kShadowColor,
-                fontSize: kBody2FontSize,
-              ),
+                  color: Color(0XFFF0ECE7)),
             ),
           ),
         ],
