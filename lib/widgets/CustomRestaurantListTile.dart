@@ -11,8 +11,8 @@ Widget buildCustomRestaurantListTile(BuildContext context, int index,
   return FadeTransition(
     opacity: Tween<double>(begin: 0, end: 1).animate(animation),
     child: Card(
-      color: Color(0XFFFDF2D6).withOpacity(0.25),
-      elevation: 0,
+      color: Color(0XFFFEFEFE),
+      elevation: 0.5,
       child: InkWell(
         splashColor: Colors.blue.withAlpha(30),
         onTap: () => Navigator.push(
@@ -23,7 +23,7 @@ Widget buildCustomRestaurantListTile(BuildContext context, int index,
               ),
             )),
         child: Padding(
-          padding: const EdgeInsets.all(10.0),
+          padding: kMediumPadding,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -32,12 +32,13 @@ Widget buildCustomRestaurantListTile(BuildContext context, int index,
                 child: Container(
                   width: 50,
                   height: 50,
-                  margin: EdgeInsets.only(right: 10),
+                  margin: EdgeInsets.only(right: kMediumSpaceUnits),
                   decoration: BoxDecoration(
-                      image: DecorationImage(
-                          image: FirebaseImage(tempData[index].imageURL),
-                          fit: BoxFit.contain),
-                      borderRadius: BorderRadius.circular(10)),
+                    image: DecorationImage(
+                        image: FirebaseImage(tempData[index].imageURL),
+                        fit: BoxFit.contain),
+                    borderRadius: kBorderRadius,
+                  ),
                 ),
               ),
               Flexible(
@@ -47,24 +48,22 @@ Widget buildCustomRestaurantListTile(BuildContext context, int index,
                     Text(
                       tempData[index].name,
                       style: kRestaurantDetailPageTileHeaderStyle.copyWith(
-                          fontWeight: FontWeight.w400, fontSize: 18.0),
+                        fontWeight: FontWeight.w400,
+                        fontSize: kBody2FontSize,
+                      ),
                     ),
-                    SizedBox(
-                      height: 5.0,
-                    ),
+                    SizedBox(height: 8.0),
                     Text(
                       tempData[index].overview,
                       style: Theme.of(context).textTheme.bodyText2.copyWith(
-                          color: Colors.black45,
-                          letterSpacing: 1.1,
+                          color: kBodyFontColor,
+                          letterSpacing: 1.2,
                           fontSize: 14.0),
                       softWrap: true,
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    SizedBox(
-                      height: 5.0,
-                    ),
+                    SizedBox(height: 8.0),
                   ],
                 ),
               ),

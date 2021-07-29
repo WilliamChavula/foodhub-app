@@ -46,7 +46,9 @@ class FoodhubRestaurantBloc
       } on FirebaseException {
         yield FoodhubRestaurantLoadingError(errorMessage: _errorMessage);
       } catch (e) {
-        yield FoodhubRestaurantLoadingError(errorMessage: e.toString());
+        yield FoodhubRestaurantLoadingError(
+            errorMessage:
+                "Uhm! Something weird happened \n Drink some coffee.");
       }
     }
   }

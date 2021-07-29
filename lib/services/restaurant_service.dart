@@ -36,9 +36,10 @@ class RestaurantRepositoryService implements RestaurantRepository {
       final restaurantsList = await restaurantCollection.get();
 
       restaurants = _restaurantFromSnapshot(restaurantsList);
-      // 43 restaurants
 
-      return restaurants;
+      _restaurants = restaurants;
+
+      return _restaurants;
     } on SocketException {
       rethrow;
     } on PlatformException {
@@ -51,9 +52,9 @@ class RestaurantRepositoryService implements RestaurantRepository {
   @override
   Future<List<Restaurant>> getFilteredRestaurants(String criteria) async {
     try {
-      final restaurants = await RestaurantRepositoryService().allRestaurants;
+      final allRestaurants = await RestaurantRepositoryService().allRestaurants;
 
-      List<Restaurant> filteredRestaurant = restaurants
+      List<Restaurant> filteredRestaurant = allRestaurants
           .where((restaurant) =>
               restaurant.categoryName.contains(criteria.toLowerCase()))
           .toList();
@@ -67,17 +68,3 @@ class RestaurantRepositoryService implements RestaurantRepository {
     }
   }
 }
-
-/*
-
-Filter list by category name
-List<Restaurant> filterList(List<Restaurant> unfilteredList) {
-    /// filters Restaurant list
-    /// returns list of [List<Restaurant>] that match the category name the user clicked
-    var categoryName = widget.categoryTitle.toLowerCase();
-    List<Restaurant> filteredList = unfilteredList
-        .where((elem) => elem.categoryName.contains(categoryName))
-        .toList();
-    return filteredList;
-  }
-*/
