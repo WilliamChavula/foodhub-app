@@ -19,8 +19,9 @@ class SharedPreferencesCache implements ICacheService {
         key,
         dataToCache,
       );
-      await _instance.setString(collectionName, dateFetched.toIso8601String());
-      if (isAdded) {
+      final isDateAdded = await _instance.setString(
+          collectionName, dateFetched.toIso8601String());
+      if (isAdded && isDateAdded) {
         return true;
       } else {
         return false;
@@ -31,10 +32,13 @@ class SharedPreferencesCache implements ICacheService {
   }
 
   @override
-  Future<String> readFromCache(String cacheKey, String collectionName) {
+  Future<String> readFromCache(String cacheKey) {
     try {
-      final dataFromCache = _instance.getString(cacheKey);
-      return Future.value(dataFromCache);
+      if (_instance.containsKey(cacheKey)) {
+        final dataFromCache = _instance.getString(cacheKey);
+        return Future.value(dataFromCache);
+      }
+      return Future.value("");
     } catch (e) {
       rethrow;
     }

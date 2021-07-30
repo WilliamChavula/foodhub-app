@@ -38,34 +38,35 @@ class RestaurantRepositoryService implements RestaurantRepository {
   Future<List<Restaurant>> get allRestaurants async {
     if (!CacheHelper.checkIfDataIsStale(COLLECTION_NAME)) {
       // read data from Cache
-      final restaurantString = await CacheHelper.readData(KEY, COLLECTION_NAME);
-      final restaurantMap = CacheHelper.getMapFromString(restaurantString);
+      final restaurantString = await CacheHelper.readData(KEY);
+      if (restaurantString.isNotEmpty) {
+        final restaurantMap = CacheHelper.getMapFromString(restaurantString);
 
-      _restaurants = getListFromMap(restaurantMap);
+        _restaurants = getListFromMap(restaurantMap);
 
-      return _restaurants;
-    } else {
-      List<Restaurant> restaurants;
-
-      try {
-        final restaurantsList = await restaurantCollection
-            .get(GetOptions(source: Source.serverAndCache));
-
-        restaurants = _restaurantFromSnapshot(restaurantsList);
-
-        // cache data
-
-        var data = await CacheHelper().convertFromSnapShotToMap(restaurantsList);
-        await CacheHelper().cacheData(KEY, data,  COLLECTION_NAME);
-
-        return restaurants;
-      } on SocketException {
-        rethrow;
-      } on PlatformException {
-        rethrow;
-      } on FirebaseException {
-        rethrow;
+        return _restaurants;
       }
+    }
+    List<Restaurant> restaurants;
+
+    try {
+      final restaurantsList = await restaurantCollection
+          .get(GetOptions(source: Source.serverAndCache));
+
+      restaurants = _restaurantFromSnapshot(restaurantsList);
+
+      // cache data
+
+      var data = await CacheHelper().convertFromSnapShotToMap(restaurantsList);
+      await CacheHelper().cacheData(KEY, data, COLLECTION_NAME);
+
+      return restaurants;
+    } on SocketException {
+      rethrow;
+    } on PlatformException {
+      rethrow;
+    } on FirebaseException {
+      rethrow;
     }
   }
 

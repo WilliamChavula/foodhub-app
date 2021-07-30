@@ -6,12 +6,12 @@ import 'package:mealsApp/CacheService/shared_preferences_cache.dart';
 
 class CacheHelper {
   static final ICacheService cacheService = SharedPreferencesCache();
-  final Map<String, dynamic> _collectionMap = Map<String, dynamic>();
 
   /// Convert snapshot received from Firestore collection to a Map
   Future<Map<String, dynamic>> convertFromSnapShotToMap(
     QuerySnapshot collectionSnapshot,
   ) async {
+    final Map<String, dynamic> _collectionMap = Map<String, dynamic>();
     collectionSnapshot.docs.forEach(
       (doc) => _collectionMap[doc.id] = doc.data(),
     );
@@ -40,11 +40,12 @@ class CacheHelper {
     return SharedPreferencesCache.validateDataNotStale(collectionName);
   }
 
-  static Future<String> readData(String cacheKey, String collectionName) async {
-    final collectionJsonString =
-        await cacheService.readFromCache(cacheKey, collectionName);
-
-    return collectionJsonString;
+  static Future<String> readData(String cacheKey) async {
+    final collectionJsonString = await cacheService.readFromCache(cacheKey);
+    if (collectionJsonString.isNotEmpty) {
+      return collectionJsonString;
+    }
+    return "";
   }
 
   static Map<String, dynamic> getMapFromString(String collectionString) {

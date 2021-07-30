@@ -7,7 +7,7 @@ abstract class ICacheService {
       String key, String dataToCache, String collectionName);
 
   /// This method reads data from the cache which matches the supplied Key.
-  Future<String> readFromCache(String cacheKey, String collectionName);
+  Future<String> readFromCache(String cacheKey);
 
   /// This method removes a data item which matches the supplied key from cache storage
   Future<bool> removeFromCache(String cacheKey);
