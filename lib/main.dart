@@ -9,6 +9,7 @@ import './bloc/restaurant_bloc/restaurant_bloc.dart';
 import './services/repository_service.dart';
 import './services/restaurant_service.dart';
 
+import 'CacheService/shared_preferences_cache.dart';
 import 'bloc/photos_bloc/bloc/photos_bloc_bloc.dart';
 import 'services/firebase_storage_service.dart';
 
@@ -16,6 +17,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await SignInWithFirebaseAuth().signIn();
+  await SharedPreferencesCache.init();
   runApp(MyApp());
 }
 
