@@ -80,3 +80,5 @@ ui-debug.log
 # firebase config
 google-services.json
 GoogleService-Info.plist
+
+key.properties
