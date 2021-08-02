@@ -44,7 +44,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.example.mealsApp"
+        applicationId "com.quivrdevelopers.tidye"
         minSdkVersion 16
         targetSdkVersion 31
         versionCode flutterVersionCode.toInteger()
